@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextContent } from '../types';
+import { TextContent } from '../types.ts';
 
 interface TextWithFuriganaProps {
   content: TextContent;

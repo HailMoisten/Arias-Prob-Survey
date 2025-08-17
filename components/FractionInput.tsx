@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Fraction } from '../types';
+import { Fraction } from '../types.ts';
 
 interface FractionInputProps {
   value: Fraction;

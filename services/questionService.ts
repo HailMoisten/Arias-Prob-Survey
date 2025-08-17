@@ -1,5 +1,5 @@
 
-import { Question, GameMode, TextContent } from '../types';
+import { Question, GameMode, TextContent } from '../types.ts';
 
 const generateBallQuestionDrawOne = (): Question => {
   const redBalls = Math.floor(Math.random() * 5) + 1;

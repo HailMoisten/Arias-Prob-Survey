@@ -1,7 +1,8 @@
 
+
 import React, { useEffect, useState, useMemo } from 'react';
-import { Question } from '../types';
-import Aria from './Aria';
+import { Question } from '../types.ts';
+import Aria from './Aria.tsx';
 
 interface CardDrawAnimationProps {
   question: Question;

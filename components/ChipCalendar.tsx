@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { PlayerState } from '../types';
+import { PlayerState } from '../types.ts';
 
 interface ChipCalendarProps {
   history: PlayerState['chipHistory'];

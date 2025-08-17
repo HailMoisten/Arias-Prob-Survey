@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useGameState } from '../hooks/useGameState';
-import TextWithFurigana from './TextWithFurigana';
-import { GameMode, TextContent } from '../types';
+import { useGameState } from '../hooks/useGameState.tsx';
+import TextWithFurigana from './TextWithFurigana.tsx';
+import { GameMode, TextContent } from '../types.ts';
 
 interface HeaderProps {
     mode?: GameMode;

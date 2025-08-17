@@ -1,6 +1,6 @@
 import React from 'react';
-import TextWithFurigana from './TextWithFurigana';
-import { TextContent } from '../types';
+import TextWithFurigana from './TextWithFurigana.tsx';
+import { TextContent } from '../types.ts';
 
 interface SpeechBubbleProps {
   message?: TextContent;
