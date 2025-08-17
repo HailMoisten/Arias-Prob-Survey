@@ -13,11 +13,11 @@ const FlippableCoin: React.FC<{ isFlipped: boolean; face: 'H' | 'T' }> = ({ isFl
     return (
         <div className={`relative w-20 h-20 transition-transform duration-1000`} style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}>
             {/* Coin Back */}
-            <div className="absolute w-full h-full rounded-full bg-gray-400 border-4 border-gray-500 flex justify-center items-center shadow-lg" style={{ backfaceVisibility: 'hidden' }}>
+            <div className="absolute w-full h-full rounded-full bg-gray-400 border-2 border-gray-500 flex justify-center items-center shadow-lg" style={{ backfaceVisibility: 'hidden' }}>
                  <div className="w-10 h-10 rounded-full bg-gray-500 opacity-50"></div>
             </div>
             {/* Coin Front */}
-            <div className="absolute w-full h-full rounded-full bg-yellow-400 border-4 border-yellow-600 flex justify-center items-center shadow-lg" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+            <div className="absolute w-full h-full rounded-full bg-yellow-400 border-2 border-yellow-600 flex justify-center items-center shadow-lg" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
                 <span className="text-5xl font-bold text-yellow-800">{face === 'H' ? '☆' : ''}</span>
             </div>
         </div>

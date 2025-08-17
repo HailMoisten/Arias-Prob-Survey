@@ -24,6 +24,7 @@ export interface Question {
   coinCount?: number;
   cardsToDraw?: number;
   hint?: string;
+  explanation?: string;
 }
 
 export interface PlayerState {

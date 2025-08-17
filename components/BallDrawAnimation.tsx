@@ -1,4 +1,5 @@
 
+
 import React, { useEffect, useState, useMemo } from 'react';
 import { Question } from '../types';
 import Aria from './Aria';
@@ -96,10 +97,10 @@ const BallDrawAnimation: React.FC<BallDrawAnimationProps> = ({ question, isWin, 
           >
             <path d="M100,50 Q120,50 120,70 L120,100 L80,100 L80,70 Q80,50 100,50 Z" fill="transparent" stroke="transparent" strokeWidth="2" />
              {isDrawTwoProblem ? (
-              <>
+              <g>
                 <circle cx="90" cy="80" r="12" fill={ball1Color} stroke="#333" strokeWidth="1" style={{ transition: 'opacity 0.5s', opacity: step === 3 ? 1 : 0 }} />
                 <circle cx="110" cy="80" r="12" fill={ball2Color!} stroke="#333" strokeWidth="1" style={{ transition: 'opacity 0.5s', opacity: step === 3 ? 1 : 0 }} />
-              </>
+              </g>
             ) : (
               <circle cx="100" cy="80" r="12" fill={ball1Color} stroke="#333" strokeWidth="1" style={{ transition: 'opacity 0.5s', opacity: step === 3 ? 1 : 0 }} />
             )}

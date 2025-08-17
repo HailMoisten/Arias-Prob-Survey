@@ -1,10 +1,6 @@
 
 import { Question, GameMode, TextContent } from '../types';
 
-const BALL_HINT = '6!=720 \\\\ 7!=5040 \\\\ 8!=40320';
-const DICE_HINT = '6^2=36 \\\\ 6^3=216';
-const COIN_HINT = '2^2=4 \\\\ 2^3=8';
-
 const generateBallQuestionDrawOne = (): Question => {
   const redBalls = Math.floor(Math.random() * 5) + 1;
   const whiteBalls = Math.floor(Math.random() * 5) + 1;
@@ -23,7 +19,10 @@ const generateBallQuestionDrawOne = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}C_1 = ${totalBalls}$`,
+    explanation: `全体の玉の数は $${redBalls} + ${whiteBalls} = ${totalBalls}$ 個。
+    赤玉を引く場合の数は $${redBalls}$ 通りなので、確率は
+    $$\\frac{赤玉の数}{全体の数} = \\frac{${redBalls}}{${totalBalls}}$$`
   };
 };
 
@@ -33,14 +32,9 @@ const generateBallQuestionAtLeastOneRed = (): Question => {
   const totalBalls = redBalls + whiteBalls;
 
   let numerator, denominator;
-  if (whiteBalls < 2) {
-    numerator = 1;
-    denominator = 1;
-  } else {
-    denominator = totalBalls * (totalBalls - 1);
-    const wwNumerator = whiteBalls * (whiteBalls - 1);
-    numerator = denominator - wwNumerator;
-  }
+  const wwNumerator = whiteBalls * (whiteBalls - 1);
+  denominator = totalBalls * (totalBalls - 1);
+  numerator = denominator - wwNumerator;
   
   return {
     id: 'random-ball-draw-2-at-least-one-red',
@@ -55,7 +49,11 @@ const generateBallQuestionAtLeastOneRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    explanation: `「少なくとも1個が赤」は「$1$ - (2個とも白)」の確率です。
+    全ての組み合わせは $_{${totalBalls}}P_2 = ${denominator}$ 通り。
+    2個とも白の組み合わせは $_{${whiteBalls}}P_2 = ${wwNumerator}$ 通り。
+    よって確率は $1 - \\frac{${wwNumerator}}{${denominator}} = \\frac{${numerator}}{${denominator}}$`
   };
 };
 
@@ -69,7 +67,7 @@ const generateBallQuestionBothRed = (): Question => {
     numerator = 0;
     denominator = 1;
   } else {
-    numerator = redBalls * (redBalls - 1) * 2;
+    numerator = redBalls * (redBalls - 1);
     denominator = totalBalls * (totalBalls - 1);
   }
   
@@ -86,7 +84,10 @@ const generateBallQuestionBothRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    explanation: `分母は${totalBalls}個から2個選んで並べる順列で $_{${totalBalls}}P_2 = ${denominator}$ 通り。
+    分子は${redBalls}個の赤玉から2個選んで並べる順列で $_{${redBalls}}P_2 = ${numerator}$ 通り。
+    よって確率は $\\frac{${numerator}}{${denominator}}$`
   };
 };
 
@@ -111,7 +112,11 @@ const generateBallQuestionFirstLastRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    explanation: `並べ方の総数は $${totalBalls}!$ 通り。
+    最初と最後が赤玉になる並べ方は、まず赤玉2個を両端に置く($_{${redBalls}}P_2$通り)。
+    残りの $${totalBalls-2}$ 個の玉を中央に並べる(${totalBalls-2}!$通り)。
+    よって確率は $\\frac{_{${redBalls}}P_2 \\times (${totalBalls}-2)!}{${totalBalls}!} = \\frac{${redBalls}(${redBalls}-1)}{${totalBalls}(${totalBalls}-1)}$`
   };
 };
 
@@ -136,7 +141,10 @@ const generateBallQuestionFirstOrLastRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    explanation: `「最初か最後が赤」は「$1$ - (最初と最後が両方白)」の確率です。
+    両方白になる確率は $\\frac{_{${whiteBalls}}P_2}{_{${totalBalls}}P_2} = \\frac{${whiteBalls}(${whiteBalls}-1)}{${totalBalls}(${totalBalls}-1)}$
+    よって確率は $1 - \\frac{${whiteBalls}(${whiteBalls}-1)}{${totalBalls}(${totalBalls}-1)}$`
   };
 };
 
@@ -161,7 +169,11 @@ const generateBallQuestionAdjacentRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: BALL_HINT,
+    hint: `$_{${totalBalls}}C_2 = ${totalBalls * (totalBalls-1) / 2}$`,
+    explanation: `赤玉2個を1つの塊と見なすと、白玉${whiteBalls}個との合計 $${whiteBalls+1}$ 個の並べ方になる。
+    よって並べ方は $(${whiteBalls}+1)!$ 通り。赤玉2個の入れ替えも考えて $2!$ を掛ける。
+    全ての並べ方は $${totalBalls}!$ 通り。
+    よって確率は $\\frac{(${whiteBalls}+1)! \\times 2!}{${totalBalls}!} = \\frac{2}{${totalBalls}}$`
   };
 };
 
@@ -178,7 +190,9 @@ const diceQuestionGenerators = {
           numerator: 1,
           denominator: 6,
       },
-      hint: DICE_HINT,
+      hint: '$6^1 = 6$',
+      explanation: `サイコロの目は6通り。6の目が出るのは1通り。
+      確率は $\\frac{1}{6}$`
   }),
   RollEven: (): Question => ({
       id: 'dice-roll-even',
@@ -192,7 +206,9 @@ const diceQuestionGenerators = {
           numerator: 3,
           denominator: 6,
       },
-      hint: DICE_HINT,
+      hint: '$6^1 = 6$',
+      explanation: `サイコロの目は6通り。偶数(2, 4, 6)が出るのは3通り。
+      確率は $\\frac{3}{6}$`
   }),
   RollSum7: (): Question => ({
     id: 'dice-roll-sum-7',
@@ -206,7 +222,10 @@ const diceQuestionGenerators = {
         numerator: 6,
         denominator: 36,
     },
-    hint: DICE_HINT,
+    hint: '$6^2 = 36$',
+    explanation: `2つのサイコロの目の出方は $6 \\times 6 = 36$ 通り。
+    和が7になる組み合わせは (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) の6通り。
+    確率は $\\frac{6}{36}$`
   }),
   RollSum6Or8: (): Question => ({
     id: 'dice-roll-sum-6-or-8',
@@ -220,7 +239,11 @@ const diceQuestionGenerators = {
         numerator: 10,
         denominator: 36,
     },
-    hint: DICE_HINT,
+    hint: '$6^2 = 36$',
+    explanation: `目の出方は36通り。
+    和が6: (1,5), (2,4), (3,3), (4,2), (5,1) の5通り。
+    和が8: (2,6), (3,5), (4,4), (5,3), (6,2) の5通り。
+    合計10通りなので確率は $\\frac{10}{36}$`
   }),
   ThreeDiceTwoSame: (): Question => ({
     id: 'dice-roll-three-two-same',
@@ -234,7 +257,11 @@ const diceQuestionGenerators = {
         numerator: 90,
         denominator: 216,
     },
-    hint: DICE_HINT,
+    hint: '$6^3 = 216$',
+    explanation: `目の出方は $6^3=216$ 通り。
+    2つだけ同じ目になるのは、どの目が同じになるか($_{6}C_1$通り)、どのサイコロが違う目になるか($_{3}C_1$通り)、違う目が何か(5通り)を掛けて、
+    $6 \\times 3 \\times 5 = 90$ 通り。
+    確率は $\\frac{90}{216}$`
   }),
 };
 
@@ -251,7 +278,9 @@ const trumpQuestionGenerators = {
         numerator: 4,
         denominator: 52,
     },
-    hint: '_{52}C_1 = 52',
+    hint: '$_{52}C_1 = 52$',
+    explanation: `52枚のカードから1枚引くのは52通り。
+    エースは4枚あるので、確率は $\\frac{4}{52}$`
   }),
   ThreeOfAKind: (): Question => ({
     id: 'cards-5-three-of-a-kind',
@@ -265,7 +294,10 @@ const trumpQuestionGenerators = {
         numerator: 54912,
         denominator: 2598960,
     },
-    hint: '_{52}C_5 \\approx 2.6 \\times 10^6',
+    hint: '$_{52}C_5 = 2598960$',
+    explanation: `5枚引く組み合わせは $_{52}C_5 \\approx 260$万通り。
+    スリーカードになる組み合わせを計算すると54912通り。
+    確率は $\\frac{54912}{2598960}$`
   }),
   TwoPair: (): Question => ({
     id: 'cards-5-two-pair',
@@ -279,7 +311,10 @@ const trumpQuestionGenerators = {
         numerator: 123552,
         denominator: 2598960,
     },
-    hint: '_{52}C_5 \\approx 2.6 \\times 10^6',
+    hint: '$_{52}C_5 = 2598960$',
+    explanation: `5枚引く組み合わせは $_{52}C_5 \\approx 260$万通り。
+    ツーペアになる組み合わせを計算すると123552通り。
+    確率は $\\frac{123552}{2598960}$`
   }),
   Flush: (): Question => ({
     id: 'cards-5-flush',
@@ -293,7 +328,10 @@ const trumpQuestionGenerators = {
         numerator: 5148,
         denominator: 2598960,
     },
-    hint: '_{52}C_5 \\approx 2.6 \\times 10^6',
+    hint: '$_{52}C_5 = 2598960$',
+    explanation: `5枚引く組み合わせは $_{52}C_5 \\approx 260$万通り。
+    フラッシュになる組み合わせは5148通り。
+    確率は $\\frac{5148}{2598960}$`
   }),
 };
 
@@ -310,7 +348,13 @@ const numberCardQuestionGenerators = {
         numerator: 48,
         denominator: 60,
     },
-    hint: '_5P_3 = 60',
+    hint: '$_5P_3 = 60$',
+    explanation: `【考え方】
+    5枚から3枚並べる順列は $_5P_3 = 60$ 通り。
+    3桁の数になるのは、百の位が0以外の場合。
+    百の位は4通り、十の位は残り4枚から1枚、一の位は残り3枚から1枚なので、
+    $4 \\times 4 \\times 3 = 48$ 通り。
+    確率は $\\frac{48}{60}$`
   }),
   ThreeDigitEven: (): Question => ({
     id: 'number-card-3-digit-even',
@@ -322,9 +366,16 @@ const numberCardQuestionGenerators = {
     },
     answer: {
         numerator: 30,
-        denominator: 48,
+        denominator: 60,
     },
-    hint: '_5P_3 = 60',
+    hint: '$_5P_3 = 60$',
+    explanation: `【考え方】
+    5枚から3枚並べる順列は $_5P_3 = 60$ 通り。
+    3桁の偶数になるのは、一の位が0, 2, 4の場合。
+    (i) 一の位が0: 百の位は残り4枚、十の位は3枚で $4 \\times 3 = 12$ 通り。
+    (ii) 一の位が2か4: 百の位は0以外の3枚、十の位は残り3枚で $3 \\times 3 \\times 2 = 18$ 通り。
+    合計 $12+18=30$ 通り。
+    確率は $\\frac{30}{60}$`
   }),
   FiveDigitNumber: (): Question => ({
     id: 'number-card-5-digit',
@@ -338,7 +389,13 @@ const numberCardQuestionGenerators = {
         numerator: 96,
         denominator: 120,
     },
-    hint: '5! = 120',
+    hint: '$5! = 120$',
+    explanation: `【考え方】
+    5枚全て並べる順列は $5! = 120$ 通り。
+    5桁の数になるのは、最初の位が0以外の場合。
+    最初の位が0になるのは、残り4枚を並べる $4! = 24$ 通り。
+    よって、5桁の数になるのは $120 - 24 = 96$ 通り。
+    確率は $\\frac{96}{120}$`
   }),
   FiveDigitEven: (): Question => ({
     id: 'number-card-5-digit-even',
@@ -350,9 +407,16 @@ const numberCardQuestionGenerators = {
     },
     answer: {
         numerator: 60,
-        denominator: 96,
+        denominator: 120,
     },
-    hint: '5! = 120',
+    hint: '$5! = 120$',
+    explanation: `【考え方】
+    5枚全て並べる順列は $5! = 120$ 通り。
+    5桁の偶数になるのは、一の位が0, 2, 4の場合。
+    (i) 一の位が0: $4! = 24$ 通り。
+    (ii) 一の位が2か4: 最初の位は0以外なので $3 \\times 3! \\times 2 = 36$ 通り。
+    合計 $24+36=60$ 通り。
+    確率は $\\frac{60}{120}$`
   }),
 };
 
@@ -369,7 +433,10 @@ const coinQuestionGenerators = {
       numerator: 2,
       denominator: 4,
     },
-    hint: COIN_HINT,
+    hint: '$2^2 = 4$',
+    explanation: `2枚のコインの出方は $2^2=4$ 通り (表表, 表裏, 裏表, 裏裏)。
+    1枚だけ表なのは (表裏, 裏表) の2通り。
+    確率は $\\frac{2}{4}$`
   }),
   ThreeCoinsAtLeastOneHead: (): Question => ({
     id: 'coin-three-at-least-one-head',
@@ -383,7 +450,10 @@ const coinQuestionGenerators = {
       numerator: 7,
       denominator: 8,
     },
-    hint: COIN_HINT,
+    hint: '$2^3 = 8$',
+    explanation: `3枚のコインの出方は $2^3=8$ 通り。
+    「少なくとも1枚表」は「$1$ - (全て裏)」の確率です。
+    全て裏になるのは1通りなので、確率は $1 - \\frac{1}{8} = \\frac{7}{8}$`
   }),
 };
 

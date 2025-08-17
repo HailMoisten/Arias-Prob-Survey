@@ -1,6 +1,4 @@
-
-
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameMode, Question, Fraction, GamePhase, TextContent, GameResult, AnswerAccuracy } from '../types';
 import { useGameState } from '../hooks/useGameState';
@@ -24,6 +22,9 @@ import Aria from './Aria';
 import SpeechBubble from './SpeechBubble';
 import HintSignboard from './HintSignboard';
 
+declare var renderMathInElement: any;
+declare var katex: any;
+
 interface GameScreenProps {
   mode: GameMode;
 }
@@ -43,7 +44,7 @@ const BallDisplay: React.FC<{ redBalls: number; whiteBalls: number; }> = ({ redB
 };
 
 const DiceDisplay: React.FC<{ count: number }> = ({ count }) => (
-  <div className="relative w-full h-full flex items-center justify-center space-x-1">
+  <div className="relative w-full h-full flex items-center justify-center space-x-1 animate-bounce-sm">
       {Array.from({ length: Math.min(count, 3) }).map((_, i) => (
           <div key={i} className="w-10 h-10 bg-white rounded-lg shadow-md border-2 border-gray-300 p-1 transform -rotate-12">
               <svg viewBox="0 0 100 100" className="w-full h-full"><circle cx="50%" cy="50%" r="10" fill="black" /></svg>
@@ -53,7 +54,7 @@ const DiceDisplay: React.FC<{ count: number }> = ({ count }) => (
 );
 
 const CoinDisplay: React.FC<{ count: number }> = ({ count }) => (
-  <div className="relative w-full h-full flex items-center justify-center space-x-[-1rem]">
+  <div className="relative w-full h-full flex items-center justify-center space-x-[-1rem] animate-bounce-sm">
       {Array.from({ length: Math.min(count, 3) }).map((_, i) => (
           <div key={i} className="w-12 h-12 bg-yellow-400 rounded-full shadow-md border-4 border-yellow-500 flex items-center justify-center transform -rotate-12">
             <span className="text-2xl font-bold text-yellow-800">☆</span>
@@ -65,11 +66,10 @@ const CoinDisplay: React.FC<{ count: number }> = ({ count }) => (
 const CardStackDisplay: React.FC<{ count: number, type: 'trump' | 'numberCard' }> = ({ count, type }) => {
     const cardColor = type === 'trump' ? 'bg-blue-500' : 'bg-green-500';
     const cardElements = [];
-    const maxCards = Math.min(count, 5);
 
-    for (let i = 0; i < maxCards; i++) {
+    for (let i = 0; i < count; i++) {
         // This creates a fanned out effect.
-        const rotation = (i - (maxCards - 1) / 2) * 10;
+        const rotation = (i - (count - 1) / 2) * 10;
         cardElements.push(
             <div 
                 key={i} 
@@ -80,7 +80,7 @@ const CardStackDisplay: React.FC<{ count: number, type: 'trump' | 'numberCard' }
     }
     
     return (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center justify-center animate-bounce-sm">
             {cardElements}
         </div>
     );
@@ -116,6 +116,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
   const [trainingWinnings, setTrainingWinnings] = useState(0);
 
   const [result, setResult] = useState<GameResult | null>(null);
+  const [isExplanationOpen, setIsExplanationOpen] = useState(false);
 
   const currentChips = isTraining ? playerState.trainingChips : playerState.chips;
 
@@ -228,6 +229,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
       setSliderValue(50);
       setFractionValue({ numerator: '', denominator: '' });
       setTrainingWinnings(0);
+      setIsExplanationOpen(false);
   };
 
   const ariaMessage = useMemo(() => {
@@ -260,7 +262,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
         </div>
 
         {selectedCategory && (
-             <>
+             <div>
                 <div className="w-full h-px bg-yellow-200 my-3"></div>
                 <TextWithFurigana content={{ en: 'Select Type', ja: 'タイプを選択' }} />
                 <div className="grid grid-cols-2 gap-2 my-4">
@@ -270,7 +272,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
                         </button>
                     ))}
                 </div>
-            </>
+            </div>
         )}
         
         <Button text={{en: 'Start', ja: 'この問題で練習！'}} onClick={handleStartTrainingQuestion} disabled={!selectedCategory || !selectedSubType} />
@@ -286,13 +288,13 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
                 <p className="text-xs text-gray-500 font-jp">(トレーニングは1枚固定)</p>
             </div>
          ) : (
-            <>
+            <div>
                 <TextWithFurigana content={{en: 'How many Mimichips to bet?', ja: '何枚賭ける？'}} jaClass="text-lg" enClass="text-sm" />
                 <div className="flex items-center space-x-4 my-4">
                     <input type="range" min="0" max={Math.min(MAX_BET, currentChips)} value={betAmount} onChange={(e) => setBetAmount(parseInt(e.target.value))} className="w-full h-3 bg-yellow-200 rounded-lg appearance-none cursor-pointer range-lg accent-orange-500" />
                     <span className="text-3xl font-bold text-orange-600 w-16 text-center">{betAmount}</span>
                 </div>
-            </>
+            </div>
          )}
         <Button text={{en: 'Bet', ja: '賭ける'}} onClick={handleBet} disabled={!isTraining && currentChips < betAmount} />
       </Card>
@@ -326,8 +328,24 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
     }
   }
 
+  const explanationRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (isExplanationOpen && explanationRef.current) {
+      if (typeof renderMathInElement !== 'undefined' && typeof katex !== 'undefined') {
+        renderMathInElement(explanationRef.current, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+          ],
+          throwOnError: false,
+        });
+      }
+    }
+  }, [isExplanationOpen, question.explanation]);
+
   const renderResultPhase = () => (
       <Modal isOpen={true}>
+          {!isExplanationOpen ? (
           <div className="text-center space-y-4 max-h-[90vh] overflow-y-auto pr-2 pb-2">
               <div className="space-y-3">
                  <Card>
@@ -346,6 +364,9 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
                         </div>
                     )}
                     <p className="text-sm space-y-1 text-gray-600 mt-2">正解の確率: {Math.round(result!.correctProbability * 100)}% ({simplifyFraction(question.answer.numerator, question.answer.denominator).numerator}/{simplifyFraction(question.answer.numerator, question.answer.denominator).denominator})</p>
+                    {question.explanation && (
+                      <Button text={{en: "Explanation", ja: "解説"}} onClick={() => setIsExplanationOpen(true)} variant="secondary" className="mt-2 w-full" />
+                    )}
                 </Card>
 
                 <Card className="bg-yellow-100/50">
@@ -365,6 +386,18 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
                 <Button text={{en: 'Back to Home', ja: 'ホームに戻る'}} onClick={handleGoHome} />
               )}
           </div>
+          ) : (
+            <div className="text-center space-y-4">
+                <TextWithFurigana content={{ en: "Explanation", ja: "解説" }} jaClass="text-2xl" enClass="text-md" />
+                <div 
+                    ref={explanationRef}
+                    className="text-left bg-white p-4 rounded-lg text-gray-700 font-jp leading-relaxed max-h-[60vh] overflow-y-auto whitespace-pre-wrap"
+                >
+                  {question.explanation}
+                </div>
+                <Button text={{ en: 'Close', ja: '閉じる' }} onClick={() => setIsExplanationOpen(false)} variant="secondary" />
+            </div>
+          )}
       </Modal>
   );
 
@@ -416,15 +449,20 @@ const GameScreen: React.FC<GameScreenProps> = ({ mode }) => {
             
             <div className="relative w-full pt-16">
               <div className="relative z-10">
+                {phase === GamePhase.ANSWERING && (
+                    <HintSignboard
+                        hintText={question.hint || 'ガンバレー'}
+                        // ▼▼ 看板の位置調整 ▼▼
+                        // bottom-[XXrem]: 下のパネル上端からの垂直位置。数値を大きくすると上に移動します。
+                        //                 アリアの肩のミミ（ひよこ）の手に重なるように調整しました。
+                        // left-1/2:       画面中央に配置
+                        // -ml-[XXrem]:    中央からの水平位置の微調整。数値を大きくすると左に移動します。
+                        className="absolute bottom-[7.5rem] left-1/2 -ml-[11.0rem] z-20"
+                    />
+                )}
+                
+                {/* Aria and illustration container */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 flex items-end justify-center w-auto h-48 mb-[-4rem]">
-                    {/* 看板の位置調整コメント: top, left, transformの値を変更して位置を微調整できます */}
-                    {phase === GamePhase.ANSWERING && question.hint && (
-                        <HintSignboard 
-                            hintText={question.hint} 
-                            className="z-20"
-                            style={{ top: '0.3rem', left: '-0.5rem' }} 
-                        />
-                    )}
                     <div className="w-48 h-48">
                       <Aria className="w-full h-full"/>
                     </div>
