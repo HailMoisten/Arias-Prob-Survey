@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameState } from '../hooks/useGameState.js';
 import TextWithFurigana from './TextWithFurigana.js';

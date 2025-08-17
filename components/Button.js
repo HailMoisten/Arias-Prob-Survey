@@ -1,3 +1,4 @@
+
 import React from 'react';
 import TextWithFurigana from './TextWithFurigana.js';
 import { TextContent } from '../types.js';

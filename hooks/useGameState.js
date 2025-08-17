@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PlayerState } from '../types.js';
 import { INITIAL_CHIPS, INITIAL_TRAINING_CHIPS, DAILY_CHIP_REWARD } from '../constants.js';

@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GameMode, Question, Fraction, GamePhase, TextContent, GameResult, AnswerAccuracy } from '../types.js';
