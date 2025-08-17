@@ -19,7 +19,7 @@ const generateBallQuestionDrawOne = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}C_1 = ${totalBalls}$`,
+    hint: `$${"_{"}${totalBalls}}C_1 = ${totalBalls}$`,
     explanation: `全体の玉の数は $${redBalls} + ${whiteBalls} = ${totalBalls}$ 個。
     赤玉を引く場合の数は $${redBalls}$ 通りなので、確率は
     $$\\frac{赤玉の数}{全体の数} = \\frac{${redBalls}}{${totalBalls}}$$`
@@ -49,7 +49,7 @@ const generateBallQuestionAtLeastOneRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    hint: `$${"_{"}${totalBalls}}P_2 = ${denominator}$`,
     explanation: `「少なくとも1個が赤」は「$1$ - (2個とも白)」の確率です。
     全ての組み合わせは $_{${totalBalls}}P_2 = ${denominator}$ 通り。
     2個とも白の組み合わせは $_{${whiteBalls}}P_2 = ${wwNumerator}$ 通り。
@@ -84,7 +84,7 @@ const generateBallQuestionBothRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    hint: `$${"_{"}${totalBalls}}P_2 = ${denominator}$`,
     explanation: `分母は${totalBalls}個から2個選んで並べる順列で $_{${totalBalls}}P_2 = ${denominator}$ 通り。
     分子は${redBalls}個の赤玉から2個選んで並べる順列で $_{${redBalls}}P_2 = ${numerator}$ 通り。
     よって確率は $\\frac{${numerator}}{${denominator}}$`
@@ -112,7 +112,7 @@ const generateBallQuestionFirstLastRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    hint: `$${"_{"}${totalBalls}}P_2 = ${denominator}$`,
     explanation: `並べ方の総数は $${totalBalls}!$ 通り。
     最初と最後が赤玉になる並べ方は、まず赤玉2個を両端に置く($_{${redBalls}}P_2$通り)。
     残りの $${totalBalls-2}$ 個の玉を中央に並べる(${totalBalls-2}!$通り)。
@@ -141,7 +141,7 @@ const generateBallQuestionFirstOrLastRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}P_2 = ${denominator}$`,
+    hint: `$${"_{"}${totalBalls}}P_2 = ${denominator}$`,
     explanation: `「最初か最後が赤」は「$1$ - (最初と最後が両方白)」の確率です。
     両方白になる確率は $\\frac{_{${whiteBalls}}P_2}{_{${totalBalls}}P_2} = \\frac{${whiteBalls}(${whiteBalls}-1)}{${totalBalls}(${totalBalls}-1)}$
     よって確率は $1 - \\frac{${whiteBalls}(${whiteBalls}-1)}{${totalBalls}(${totalBalls}-1)}$`
@@ -169,7 +169,7 @@ const generateBallQuestionAdjacentRed = (): Question => {
     },
     redBalls,
     whiteBalls,
-    hint: `$_{${totalBalls}}C_2 = ${totalBalls * (totalBalls-1) / 2}$`,
+    hint: `$${"_{"}${totalBalls}}C_2 = ${totalBalls * (totalBalls-1) / 2}$`,
     explanation: `赤玉2個を1つの塊と見なすと、白玉${whiteBalls}個との合計 $${whiteBalls+1}$ 個の並べ方になる。
     よって並べ方は $(${whiteBalls}+1)!$ 通り。赤玉2個の入れ替えも考えて $2!$ を掛ける。
     全ての並べ方は $${totalBalls}!$ 通り。
