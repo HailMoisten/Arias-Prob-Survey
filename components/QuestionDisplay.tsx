@@ -1,9 +1,9 @@
 
 
 import React from 'react';
-import { Question } from '../types.js';
-import Card from './Card.js';
-import TextWithFurigana from './TextWithFurigana.js';
+import { Question } from '../types.ts';
+import Card from './Card.tsx';
+import TextWithFurigana from './TextWithFurigana.tsx';
 
 interface QuestionDisplayProps {
   question: Question;

@@ -1,8 +1,8 @@
 
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Question } from '../types.js';
-import Aria from './Aria.js';
+import { Question } from '../types.ts';
+import Aria from './Aria.tsx';
 
 interface DiceRollAnimationProps {
   question: Question;

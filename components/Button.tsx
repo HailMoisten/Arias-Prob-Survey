@@ -1,6 +1,6 @@
 import React from 'react';
-import TextWithFurigana from './TextWithFurigana.js';
-import { TextContent } from '../types.js';
+import TextWithFurigana from './TextWithFurigana.tsx';
+import { TextContent } from '../types.ts';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;

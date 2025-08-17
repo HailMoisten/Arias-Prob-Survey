@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGameState } from '../hooks/useGameState.js';
-import Aria from './Aria.js';
-import Button from './Button.js';
-import Header from './Header.js';
-import TextWithFurigana from './TextWithFurigana.js';
-import { TextContent } from '../types.js';
-import Modal from './Modal.js';
-import ChipCalendar from './ChipCalendar.js';
-import SpeechBubble from './SpeechBubble.js';
+import { useGameState } from '../hooks/useGameState.tsx';
+import Aria from './Aria.tsx';
+import Button from './Button.tsx';
+import Header from './Header.tsx';
+import TextWithFurigana from './TextWithFurigana.tsx';
+import { TextContent } from '../types.ts';
+import Modal from './Modal.tsx';
+import ChipCalendar from './ChipCalendar.tsx';
+import SpeechBubble from './SpeechBubble.tsx';
 
 
 const HomeScreen: React.FC = () => {

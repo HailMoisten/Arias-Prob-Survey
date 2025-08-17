@@ -1,9 +1,9 @@
 import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import HomeScreen from './components/HomeScreen.js';
-import GameScreen from './components/GameScreen.js';
-import { GameMode } from './types.js';
-import { GameStateProvider } from './hooks/useGameState.js';
+import HomeScreen from './components/HomeScreen.tsx';
+import GameScreen from './components/GameScreen.tsx';
+import { GameMode } from './types.ts';
+import { GameStateProvider } from './hooks/useGameState.tsx';
 
 const App: React.FC = () => {
   return (

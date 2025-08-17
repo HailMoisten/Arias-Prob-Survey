@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PlayerState } from '../types.js';
-import { INITIAL_CHIPS, INITIAL_TRAINING_CHIPS, DAILY_CHIP_REWARD } from '../constants.js';
+import { PlayerState } from '../types.ts';
+import { INITIAL_CHIPS, INITIAL_TRAINING_CHIPS, DAILY_CHIP_REWARD } from '../constants.ts';
 
 const GAME_STATE_KEY = 'aria-probability-game-state';
 const LAST_DAILY_CHIP_DATE_KEY = 'aria-probability-last-daily-chip-date';
