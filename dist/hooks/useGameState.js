@@ -1,6 +1,6 @@
-import { jsx as _jsx } from "react/jsx-runtime";
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { INITIAL_CHIPS, INITIAL_TRAINING_CHIPS, DAILY_CHIP_REWARD } from '../constants.ts';
+import { jsx } from "react/jsx-runtime";
+import { createContext, useContext, useState, useEffect } from 'react';
+import { INITIAL_CHIPS, INITIAL_TRAINING_CHIPS, DAILY_CHIP_REWARD } from '../constants.js';
 const GAME_STATE_KEY = 'aria-probability-game-state';
 const LAST_DAILY_CHIP_DATE_KEY = 'aria-probability-last-daily-chip-date';
 const GameStateContext = createContext(undefined);
@@ -79,7 +79,7 @@ export const GameStateProvider = ({ children }) => {
         return false;
     };
     const value = { playerState, setPlayerState, canPlayNormalMode, addChips, markAsPlayed, claimDailyChip, hasClaimedDailyChipToday };
-    return (_jsx(GameStateContext.Provider, { value: value, children: children }));
+    return (jsx(GameStateContext.Provider, { value: value, children: children }));
 };
 export const useGameState = () => {
     const context = useContext(GameStateContext);

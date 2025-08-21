@@ -1,4 +1,4 @@
-import { GameMode } from '../types.ts';
+import { GameMode } from '../types.js';
 const generateBallQuestionDrawOne = () => {
     const redBalls = Math.floor(Math.random() * 5) + 1;
     const whiteBalls = Math.floor(Math.random() * 5) + 1;
